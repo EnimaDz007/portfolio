@@ -22,7 +22,10 @@
   --ok:#22c55e; --radius:18px;
   color-scheme:dark;
 }
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+body{-webkit-user-select:none;user-select:none}
+input,textarea,select{-webkit-user-select:text;user-select:text}
+img{-webkit-touch-callout:none;-webkit-user-drag:none;user-drag:none}
 html{scroll-behavior:smooth}
 body{color:var(--ink);line-height:1.7;background:#0a1122}
 .bg-move{position:fixed;inset:0;z-index:-2;will-change:transform}
@@ -655,6 +658,29 @@ function closeLb(){
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLb(); });
+/* protect content */
+(function(){
+  var note = null, noteT = null;
+  function showNote(){
+    if(!note){
+      note = document.createElement('div');
+      note.style.cssText = 'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:rgba(8,14,28,.95);border:1px solid rgba(59,139,255,.4);color:#bcd6ff;padding:9px 18px;border-radius:999px;font-size:.8rem;font-weight:700;z-index:9999;pointer-events:none;transition:opacity .3s;opacity:0;white-space:nowrap';
+      note.textContent = '\u00A9 Meraki.creation \u2014 \u0627\u0644\u0645\u062D\u062A\u0648\u0649 \u0645\u062D\u0645\u064A';
+      document.body.appendChild(note);
+    }
+    note.style.opacity = '1';
+    clearTimeout(noteT);
+    noteT = setTimeout(function(){ note.style.opacity = '0'; }, 1600);
+  }
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); showNote(); });
+  document.addEventListener('dragstart', function(e){ if(e.target && e.target.tagName === 'IMG'){ e.preventDefault(); showNote(); } });
+  document.addEventListener('copy', function(e){ var t = e.target; if(!(t && t.closest && t.closest('input,textarea,select'))){ e.preventDefault(); showNote(); } });
+  document.addEventListener('cut', function(e){ var t = e.target; if(!(t && t.closest && t.closest('input,textarea,select'))){ e.preventDefault(); } });
+  document.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase();
+    if(e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c','k'].indexOf(k) > -1) || ((e.ctrlKey || e.metaKey) && ['u','s','p'].indexOf(k) > -1)){ e.preventDefault(); showNote(); }
+  });
+})();
 function toggleWaChat(){
   const w = document.getElementById('waChat');
   w.style.display = (w.style.display === 'none') ? 'block' : 'none';
