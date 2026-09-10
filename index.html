@@ -483,12 +483,13 @@ function setImg(el){
 
 /* packages */
 const PACKS = {
- 1:{price:25000, ar:'🚀 الانطلاقة', fr:'🚀 Démarrage'},
- 2:{price:45000, ar:'⭐ الاحترافية', fr:'⭐ Professionnelle'},
- 3:{price:75000, ar:'🏆 الملكية الكاملة', fr:'🏆 Pleine propriété'}
+ 1:{price:25000, ar:'🚀 الانطلاقة', fr:'🚀 Démarrage', en:'🚀 Startup'},
+ 2:{price:45000, ar:'⭐ الاحترافية', fr:'⭐ Professionnelle', en:'⭐ Professional'},
+ 3:{price:75000, ar:'🏆 الملكية الكاملة', fr:'🏆 Pleine propriété', en:'🏆 Full ownership'}
 };
 let curPack = 2;
 function langFR(){ return document.documentElement.lang === 'fr'; }
+function langEN(){ return document.documentElement.lang === 'en'; }
 const money = n => '\u2066' + n.toLocaleString('en-US') + '\u2069 دج';
 function pickPack(k){
   curPack = k;
@@ -511,7 +512,7 @@ function extrasSum(){
 function updateSum(){
   const p = PACKS[curPack] || PACKS[2];
   const ex = extrasSum();
-  document.getElementById('sumPackName').textContent = langFR() ? p.fr : p.ar;
+  document.getElementById('sumPackName').textContent = langEN() ? p.en : (langFR() ? p.fr : p.ar);
   document.getElementById('sumPrice').textContent = money(p.price);
   document.getElementById('sumExtra').textContent = ex ? money(ex) : '—';
   document.getElementById('sumTotal').textContent = money(p.price + ex);
@@ -529,7 +530,7 @@ function productsLabel(){
   const v = document.getElementById('bNprod').value;
   if(v !== 'more') return v;
   const n = parseInt(document.getElementById('bNcustom').value, 10);
-  return (langFR() ? 'Plus de 10' : 'أكثر من 10') + (n ? ' — ' + '\u2066' + n + '\u2069' : '');
+  return (langEN() ? 'More than 10' : langFR() ? 'Plus de 10' : 'أكثر من 10') + (n ? ' — ' + '\u2066' + n + '\u2069' : '');
 }
 function fMoreShow(){
   document.getElementById('fMore').style.display = document.getElementById('bField').value === 'أخرى' ? 'block' : 'none';
@@ -538,7 +539,7 @@ function briefField(){
   const v = document.getElementById('bField').value;
   if(v !== 'أخرى') return v;
   const c = document.getElementById('bFieldCust').value.trim();
-  return c || (langFR() ? 'Autre' : 'أخرى');
+  return c || (langEN() ? 'Other' : langFR() ? 'Autre' : 'أخرى');
 }
 
 /* brief submit */
@@ -551,12 +552,12 @@ function submitBrief(e){
   const shop = document.getElementById('bShop').value.trim();
   const okPhone = /^0(5|6|7)[0-9]{8}$/.test(phone);
   document.getElementById('bePhone').style.display = okPhone ? 'none' : 'block';
-  if(!name || !shop){ alert(langFR()?'Veuillez remplir tous les champs obligatoires':'يرجى ملء جميع الحقول الإجبارية'); return false; }
+  if(!name || !shop){ alert(langEN()?'Please fill in all the required fields':langFR()?'Veuillez remplir tous les champs obligatoires':'يرجى ملء جميع الحقول الإجبارية'); return false; }
   if(!okPhone) return false;
   lastBrief = { name, phone, shop,
     field: briefField(),
     products: productsLabel(),
-    packAr: PACKS[curPack].ar, packFr: PACKS[curPack].fr, packPrice: PACKS[curPack].price,
+    packAr: PACKS[curPack].ar, packFr: PACKS[curPack].fr, packEn: PACKS[curPack].en, packPrice: PACKS[curPack].price,
     extras: Array.from(document.querySelectorAll('.bx:checked')).map(b => b.dataset.n),
     extrasTotal: extrasSum(),
     extra: document.getElementById('bExtra').value.trim(),
@@ -575,10 +576,17 @@ function submitBrief(e){
 function renderOk(){
   if(!lastBrief) return;
   const b = lastBrief, iso = s => '\u2066' + s + '\u2069';
-  const pack = langFR() ? b.packFr : b.packAr;
-  const cur = langFR() ? 'DA' : 'دج';
-  const exLine = b.extrasTotal ? ' + ' + (langFR() ? 'services ajoutées' : 'خدمات إضافية') : '';
-  if(langFR()){
+  const pack = langEN() ? b.packEn : (langFR() ? b.packFr : b.packAr);
+  const cur = (langEN() || langFR()) ? 'DA' : 'دج';
+  const exLine = b.extrasTotal ? ' + ' + (langEN() ? 'add-on services' : langFR() ? 'services ajoutées' : 'خدمات إضافية') : '';
+  if(langEN()){
+    document.getElementById('briefOkP').innerHTML =
+      '<b style="color:var(--ink)">📋 Your request was recorded directly from the form — nothing to retype, nothing to send on WhatsApp</b><br><br>'
+      +'📞 <b>Step 1:</b> we contact you very quickly (usually in less than an hour) to settle everything<br>'
+      +'💰 <b>Step 2:</b> 50% deposit and we start the same day<br>'
+      +'🚀 <b>Step 3:</b> after <b>7 days</b> your store is online — you check it and you sell<br><br>'
+      +'💎 Plan: <b>'+pack+'</b> — '+iso(b.packPrice.toLocaleString('en-US'))+' '+cur+exLine;
+  } else if(langFR()){
     document.getElementById('briefOkP').innerHTML =
       '<b style="color:var(--ink)">📋 Demande enregistrée directement depuis le formulaire — rien à retaper, rien à envoyer sur WhatsApp</b><br><br>'
       +'📞 <b>Étape 1 :</b> on vous contacte très vite (souvent en moins d\'une heure) pour tout cadrer<br>'
@@ -749,6 +757,68 @@ const FR = {
  ft:'Agence e-commerce · Algérie', ft2:'50% acompte · 50% à la livraison · contrat écrit pour chaque projet',
  legal:'Meraki.creation — RC : [numéro] · NIF : [numéro] · Adresse : [adresse, wilaya] · Tél : [numéro] · Site hébergé conformément à la loi 18-05.'
 };
+const EN = {
+ brand:'Meraki<b style="color:var(--blue)">.creation</b>', ctaTop:'Order now',
+ nav1:'Pricing & plans', nav2:'Our work', nav3:'How we work', nav4:'FAQ',
+ pill:'💎 E-commerce agency — transparent pricing, no surprises',
+ h1:'We build <em>online stores that sell</em> — with a clear price from the start',
+ lead:'No “it depends” here: every plan has its price displayed. You choose, you fill in the form, and your store is online within 7 days.',
+ hwa:'WhatsApp direct',
+ waH:'WhatsApp', waMsg:'Welcome to Meraki.creation! 👋<br>How can we help you today ?', waBtn:'Start the chat',
+ buyNow:'💬 Order now — fill in the form',
+ t1:'<b>Written contract</b> for every project', t2:'<b>100% ownership</b> is yours', t3:'<b>2 free revisions</b>', t4:'<b>Delivery</b> in 7 days',
+ workT:'Our work', workH:'Real stores that sell 👇', workSub:'Click and see for yourself — the same technology we will use for you',
+ w1t:'Auto · Accessories', w1b:'Car accessories store', w1p:'Premium seat-gap organizer — smart COD form, prices by wilaya, bundles, AR/FR.',
+ w2t:'Gaming · Electronics', w2b:'PlayStation store — all generations', w2p:'From PS5 Pro to PS1 — every generation with its listing, price and warranty.',
+ w3t:'Reserved spot', w3b:'Your store here next… ⭐', w3p:'Clothes, perfumes, electronics, baby products… whatever you sell in Algeria — we build your version within 7 days.',
+ visit:'Visit the store ↗', start:'Start yours now ↓',
+ svcT:'Pricing & plans', svcH:'Choose your plan', svcSub:'Final prices, no surprises — 50% deposit, 50% on delivery. Click a plan and it fills the form directly.',
+ pfrom:'Starting from', cur:'DA',
+ o1b:'🚀 Startup', o1t:'To launch your first project',
+ l1a:'One-page store ready to sell', l1b:'5 products with photos and prices', l1c:'Arabic + French', l1d:'COD form (cash on delivery)', l1e:'Illustrated guide to edit it yourself', l1f:'Delivered in 7 days',
+ pick1:'Choose Startup ←',
+ o2b:'⭐ Professional', o2t:'The most requested by our clients', o2badge:'⭐ Most popular',
+ l2a:'10 products with photos and prices', l2b:'Professional logo design', l2c:'.com domain in your name', l2d:'Ready-to-run TikTok ad in darija', l2e:'30-day warranty after delivery',
+ pick2:'Choose Professional ←',
+ o3b:'🏆 Full ownership', o3t:'To take everything', o3badge:'👑 Best value',
+ l3a:'Everything in the Pro plan', l3b:'All the website files are yours', l3c:'Google Business listing for your store', l3d:'1 month of free maintenance after',
+ pick3:'Choose Full ownership ←',
+ mT:'Monthly maintenance (optional):', mD:'price/product edits, number, logo, backups, priority support',
+ brT:'Order your store', brH:'Let us build your store together 🛒', brSub:'Fill in this simple information (5 minutes) — we handle everything: from design to launch',
+ brSh:'What happens next? 👇', brSp:'Simple: you fill it in, we contact you, and you only pay the rest if you like the store.',
+ brL1:'We call you on WhatsApp', brL1b:' — to understand your business well',
+ brL2:'50% deposit', brL2b:' — we start the same day',
+ brL3:'After 7 days', brL3b:' your store is online — share the link and sell',
+ brL4:'Written contract', brL4b:' — the store is 100% yours',
+ slP:'Selected plan', slPrice:'Plan price', slExtra:'Add-on services (optional)', slTotal:'Total', slHalf:'Deposit at order (50%)',
+ gift:'🎁 Gift: with every plan, a complete training on editing prices and products yourself!',
+ zoneHint:'Payment: 50% deposit · 50% on delivery — everything is written in the contract',
+ blName:'Your full name *', blPhone:'Your WhatsApp number *', blShop:'Your store name? *', blField:'What do you sell? *',
+ blNprod:'About how many products?', blPack:'Selected plan *',
+ blNmore:'Write the exact number of products ✍️',
+ blFmore:'Write exactly what you sell ✍️',
+ blSrv:'Add-on services we offer — tick only what interests you ✨ (you pay only what you tick)',
+ ad1:'🎨 Pro logo design', ad2:'📸 Photos of your products', ad3:'🌍 .com domain in your name', ad4:'🔧 1 extra month of maintenance',
+ blExtra:'Anything else to add? (optional — e.g. I have the logo, I have the photos…)',
+ brSubmit:'✅ Send — we handle the rest', brNote:'🔒 Your data stays private — used only to contact you back',
+ bePhone:'⚠ Invalid number — enter 10 digits starting with 05, 06 or 07',
+ brOkH:'Information received!',
+ howT:'How we work', howH:'From the idea to the first sale — 4 steps', howSub:'Clear and simple, the way you like it',
+ st1b:'Fill in the brief', st1p:'Above — a few minutes and your project is with us.',
+ st2b:'50% deposit', st2p:'We call you, confirm the details, and start.',
+ st3b:'Preview', st3p:'You see the store on a test link and request the adjustments.',
+ st4b:'Launch', st4p:'You pay the balance — the site goes live in your name, 100% owner.',
+ faqT:'Frequently asked questions', faqH:'Questions clients ask', faqSub:'Full transparency before you pay',
+ qa1:'Who owns the website after delivery ?', aa1:'You, 100%. Accounts and domain are created with your email from the start, our access is removed after delivery — written in the contract.',
+ qa2:'Do I need technical skills ?', aa2:'No. You receive an illustrated guide to edit prices, products and the number yourself.',
+ qa3:'Any extra fees ?', aa3:'The domain (~$15, about 4,000 DA/year, in your name). Hosting is free. Everything else is on the invoice.',
+ qa4:'What if I do not like the design ?', aa4:'Two free revisions after the first preview. Deposit refunded if the work has not started.',
+ qa5:'Can you add online payment ?', aa5:'The Algerian market is 95% cash on delivery. CIB/Edahabia gateways are possible as an option.',
+ ctaH:'Ready to sell online? 🚀', ctaP:'One WhatsApp message away from your store — answer in less than an hour',
+ ctaB:'💬 Start — fill in the form',
+ ft:'E-commerce agency · Algeria', ft2:'50% deposit · 50% on delivery · written contract for every project',
+ legal:'Meraki.creation — RC: [number] · NIF: [number] · Address: [address, wilaya] · Tel: [number] · Site hosted in accordance with law 18-05.'
+};
 const ARBACK = {};
 document.querySelectorAll('[data-i]').forEach(el => ARBACK[el.dataset.i] = el.innerHTML);
 let lang = 'ar';
@@ -757,19 +827,20 @@ function setLang(l){
   document.querySelectorAll('[data-i]').forEach(el => {
     const k = el.dataset.i;
     if(l === 'ar') el.innerHTML = ARBACK[k];
+    else if(l === 'en' && EN[k] !== undefined) el.innerHTML = EN[k];
     else if(FR[k] !== undefined) el.innerHTML = FR[k];
   });
   document.documentElement.lang = l;
   document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
-  document.getElementById('langBtn').textContent = (l === 'ar') ? 'Français' : 'العربية';
-  document.querySelector('#bNprod option[value="more"]').textContent = (l === 'fr') ? 'Plus de 10 ✍️ (préciser)' : 'أكثر من 10 ✍️ (أدخل العدد)';
-  document.getElementById('bNcustom').placeholder = (l === 'fr') ? 'ex : 25' : 'مثال: 25';
-  document.querySelector('#bField option[value="أخرى"]').textContent = (l === 'fr') ? 'Autre ✍️ (préciser)' : 'أخرى ✍️ (حدد ما تبيعه)';
-  document.getElementById('bFieldCust').placeholder = (l === 'fr') ? 'ex : matériel sportif et compléments' : 'مثال: معدات رياضية ومكملات غذائية';
+  document.getElementById('langBtn').textContent = (l === 'ar') ? 'Français' : (l === 'fr') ? 'English' : 'العربية';
+  document.querySelector('#bNprod option[value="more"]').textContent = {ar:'أكثر من 10 ✍️ (أدخل العدد)', fr:'Plus de 10 ✍️ (préciser)', en:'More than 10 ✍️ (specify)'}[l];
+  document.getElementById('bNcustom').placeholder = {ar:'مثال: 25', fr:'ex : 25', en:'e.g. 25'}[l];
+  document.querySelector('#bField option[value="أخرى"]').textContent = {ar:'أخرى ✍️ (حدد ما تبيعه)', fr:'Autre ✍️ (préciser)', en:'Other ✍️ (specify)'}[l];
+  document.getElementById('bFieldCust').placeholder = {ar:'مثال: معدات رياضية ومكملات غذائية', fr:'ex : matériel sportif et compléments', en:'e.g. sports gear and supplements'}[l];
   updateSum();
   renderOk();
 }
-function toggleLang(){ setLang(lang === 'fr' ? 'ar' : 'fr'); }
+function toggleLang(){ setLang(lang === 'ar' ? 'fr' : (lang === 'fr' ? 'en' : 'ar')); }
 
 updateSum();
 </script>
