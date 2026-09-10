@@ -111,6 +111,8 @@ nav.desk a:hover{color:var(--blue)}
 .maint b{color:var(--ink)}
 .maint .mp{color:var(--blue);font-weight:900;font-size:1.1rem;white-space:nowrap;text-shadow:0 0 10px rgba(59,139,255,.38)}
 .order-box{display:grid;grid-template-columns:.95fr 1.05fr;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:transparent;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.order-box.flash{animation:orderFlash 2.2s ease}
+@keyframes orderFlash{0%{box-shadow:0 24px 60px rgba(0,0,0,.45);border-color:var(--line)}16%{box-shadow:0 0 0 3px rgba(59,139,255,.6),0 0 70px rgba(59,139,255,.38);border-color:var(--blue)}50%{box-shadow:0 0 0 2px rgba(59,139,255,.3),0 0 40px rgba(59,139,255,.18);border-color:rgba(59,139,255,.6)}100%{box-shadow:0 24px 60px rgba(0,0,0,.45);border-color:var(--line)}}
 .order-sum{background:transparent;padding:32px;border-inline-end:1px solid var(--line)}
 .order-sum h3{font-size:1.2rem;font-weight:900;margin-bottom:6px}
 .order-sum .sub{color:var(--mut);font-size:.92rem;margin-bottom:18px}
@@ -492,7 +494,12 @@ function pickPack(k){
   updateSum();
   goBrief();
 }
-function goBrief(){ document.getElementById('brief').scrollIntoView({behavior:'smooth'}); }
+function goBrief(){
+  document.getElementById('brief').scrollIntoView({behavior:'smooth'});
+  var ob = document.querySelector('.order-box');
+  ob.classList.remove('flash'); void ob.offsetWidth; ob.classList.add('flash');
+  setTimeout(function(){ ob.classList.remove('flash'); }, 2400);
+}
 function extrasSum(){
   let s = 0;
   document.querySelectorAll('.bx:checked').forEach(b => s += parseInt(b.value, 10));
