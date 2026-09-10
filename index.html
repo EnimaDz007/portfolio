@@ -654,7 +654,6 @@ function toggleWaChat(){
   const w = document.getElementById('waChat');
   w.style.display = (w.style.display === 'none') ? 'block' : 'none';
 }
-try { if(!sessionStorage.getItem('waShown')){ sessionStorage.setItem('waShown','1'); setTimeout(function(){ toggleWaChat(); }, 5000); } } catch(err) {}
 
 /* language */
 const FR = {
