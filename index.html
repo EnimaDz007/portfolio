@@ -60,10 +60,14 @@ nav.desk{display:flex;gap:26px}
 nav.desk a{color:var(--mut);text-decoration:none;font-weight:700;font-size:.94rem}
 nav.desk a:hover{color:var(--blue)}
 .hd-actions{display:flex;align-items:center;gap:10px}
-.lang-wrap{display:flex;gap:6px}
-.lang-btn{background:transparent;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:.82rem;font-weight:800}
+.lang-dd{position:relative}
+.lang-btn{background:transparent;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 16px;cursor:pointer;font-size:.85rem;font-weight:800;display:inline-flex;align-items:center;gap:7px}
 .lang-btn:hover{border-color:var(--blue);color:var(--blue)}
-.lang-btn.on{border-color:var(--blue);color:var(--blue);background:rgba(59,139,255,.13)}
+.lang-menu{position:absolute;top:calc(100% + 8px);inset-inline-end:0;background:#0e1830;border:1px solid var(--line);border-radius:14px;padding:6px;min-width:140px;display:none;z-index:95;box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.lang-dd.open .lang-menu{display:block;animation:lbFade .18s ease}
+.lang-menu button{display:block;width:100%;text-align:start;background:transparent;border:0;color:var(--ink);padding:9px 14px;border-radius:9px;cursor:pointer;font-weight:800;font-size:.88rem;font-family:inherit}
+.lang-menu button:hover{background:rgba(59,139,255,.12)}
+.lang-menu button.on{color:var(--blue);background:rgba(59,139,255,.13)}
 .cta-top{background:linear-gradient(135deg,#0e63d0,#3b8bff);color:#fff;border:none;border-radius:999px;padding:10px 22px;font-weight:800;cursor:pointer;font-size:.92rem;box-shadow:0 0 9px rgba(59,139,255,.28),0 4px 14px rgba(14,99,208,.3)}
 .cta-top:hover{filter:brightness(1.1)}
 .hero{display:grid;grid-template-columns:1.08fr .92fr;gap:40px;align-items:center;padding:56px 0 40px}
@@ -214,10 +218,13 @@ footer{border-top:1px solid var(--line);background:#080f1f;padding:26px 0;color:
     <a href="#faq" data-i="nav4">أسئلة شائعة</a>
   </nav>
   <div class="hd-actions">
-    <span class="lang-wrap">
-     <button class="lang-btn on" onclick="setLang('ar')">العربية</button>
-     <button class="lang-btn" onclick="setLang('fr')">Français</button>
-     <button class="lang-btn" onclick="setLang('en')">English</button>
+    <span class="lang-dd" id="langDd">
+     <button class="lang-btn" onclick="toggleLangMenu(event)"><span id="langCur">العربية</span> <span style="font-size:.7rem">▼</span></button>
+     <div class="lang-menu" id="langMenu">
+      <button data-l="ar" class="on" onclick="pickLang('ar')">العربية</button>
+      <button data-l="fr" onclick="pickLang('fr')">Français</button>
+      <button data-l="en" onclick="pickLang('en')">English</button>
+     </div>
     </span>
     <button class="cta-top" onclick="goBrief()" data-i="ctaTop">اطلب متجرك</button>
   </div>
@@ -672,6 +679,9 @@ function closeLb(){
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLb(); });
+function toggleLangMenu(e){ if(e) e.stopPropagation(); document.getElementById('langDd').classList.toggle('open'); }
+function pickLang(l){ setLang(l); document.getElementById('langDd').classList.remove('open'); }
+document.addEventListener('click', function(e){ var dd = document.getElementById('langDd'); if(dd && !dd.contains(e.target)) dd.classList.remove('open'); });
 /* protect content */
 (function(){
   var note = null, noteT = null;
@@ -838,10 +848,8 @@ function setLang(l){
   });
   document.documentElement.lang = l;
   document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
-  document.querySelectorAll('.lang-btn').forEach(function(b){
-    var bl = b.textContent.trim() === 'العربية' ? 'ar' : (b.textContent.trim() === 'English' ? 'en' : 'fr');
-    b.classList.toggle('on', bl === l);
-  });
+  document.getElementById('langCur').textContent = {ar:'العربية', fr:'Français', en:'English'}[l];
+  document.querySelectorAll('#langMenu button').forEach(function(b){ b.classList.toggle('on', b.dataset.l === l); });
   document.querySelector('#bNprod option[value="more"]').textContent = {ar:'أكثر من 10 ✍️ (أدخل العدد)', fr:'Plus de 10 ✍️ (préciser)', en:'More than 10 ✍️ (specify)'}[l];
   document.getElementById('bNcustom').placeholder = {ar:'مثال: 25', fr:'ex : 25', en:'e.g. 25'}[l];
   document.querySelector('#bField option[value="أخرى"]').textContent = {ar:'أخرى ✍️ (حدد ما تبيعه)', fr:'Autre ✍️ (préciser)', en:'Other ✍️ (specify)'}[l];
