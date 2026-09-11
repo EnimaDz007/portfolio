@@ -89,7 +89,7 @@ nav.desk a:hover{color:var(--blue)}
 .thumb{width:100%;border-radius:10px;cursor:pointer;opacity:.55;border:2px solid transparent;aspect-ratio:16/10;object-fit:cover;transition:.15s}
 .thumb:hover{opacity:.95}
 .thumb.active{opacity:1;border-color:var(--blue)}
-.works{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.works{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 .work{position:relative;background:transparent;border:none;border-radius:var(--radius);overflow:hidden;transition:.18s}
 .work:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.45);border-color:#31507f}
 .work>img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;cursor:zoom-in}
@@ -284,6 +284,14 @@ footer{border-top:1px solid var(--line);background:#080f1f;padding:26px 0;color:
     <b data-i="w3b">متجرك القادم… سيكون هنا ⭐</b>
     <p data-i="w3p">ملابس، عطور، إلكترونيات، منتجات أطفال… أي نشاط تبيع في الجزائر — ننشئ نسختك خلال 7 أيام.</p>
     <a class="w-link" href="#brief" onclick="goBrief(event)" data-i="start">ابدأ أنت الآن ↓</a>
+   </div>
+  </div>
+  <div class="work">
+   <div class="w-badge" data-i="w4t">منصة · SaaS</div>
+   <div class="w-body">
+    <b data-i="w4b">منصّة بناء المتاجر للتجّار العرب</b>
+    <p data-i="w4p">تطبيق ويب ننشئه بأنفسنا — يمكّن التاجر من إنشاء متجره الإلكتروني بنفسه خطوة بخطوة: منتجات، تصميم، وسلة جاهزة للبيع.</p>
+    <a class="w-link" href="https://87j08k-i17eiv5gx-arcadawebapps8.vercel.app" target="_blank" rel="noopener" data-i="try4">جرّب المنصة ↗</a>
    </div>
   </div>
  </div>
@@ -725,6 +733,8 @@ const FR = {
  w1t:'Auto · Accessoires', w1b:'Boutique accessoires auto', w1p:'Organisateur de siège premium — formulaire COD intelligent, prix par wilaya, bundles, AR/FR.',
  w2t:'Gaming · Électronique', w2b:'Boutique PlayStation — toutes générations', w2p:'De la PS5 Pro à la PS1 — chaque génération avec sa fiche, son prix et sa garantie.',
  w3t:'Place réservée', w3b:'Votre boutique ici ⭐', w3p:'Mode, parfums, électronique, bébé… tout ce qui se vend en Algérie — votre version en 7 jours.',
+ w4t:'Plateforme · SaaS', w4b:'Plateforme de création de boutiques pour commerçants arabes', w4p:'Une application web que nous développons nous-mêmes — le commerçant crée sa boutique en ligne étape par étape : produits, design et panier prêts à vendre.',
+ try4:'Essayer la plateforme ↗',
  visit:'Visiter la boutique ↗', start:'Commencer maintenant ↓',
  svcT:'Formules & prix', svcH:'Choisissez votre formule', svcSub:'Prix finaux, sans surprise — 50% acompte, 50% à la livraison. Cliquez sur une formule et elle se remplit directement dans le formulaire.',
  pfrom:'À partir de', cur:'DA',
@@ -787,6 +797,8 @@ const EN = {
  w1t:'Auto · Accessories', w1b:'Car accessories store', w1p:'Premium seat-gap organizer — smart COD form, prices by wilaya, bundles, AR/FR.',
  w2t:'Gaming · Electronics', w2b:'PlayStation store — all generations', w2p:'From PS5 Pro to PS1 — every generation with its listing, price and warranty.',
  w3t:'Reserved spot', w3b:'Your store here next… ⭐', w3p:'Clothes, perfumes, electronics, baby products… whatever you sell in Algeria — we build your version within 7 days.',
+ w4t:'Platform · SaaS', w4b:'Store-builder platform for Arab merchants', w4p:'A web application we build ourselves — the merchant creates their online store step by step: products, design and a ready-to-sell cart.',
+ try4:'Try the platform ↗',
  visit:'Visit the store ↗', start:'Start yours now ↓',
  svcT:'Pricing & plans', svcH:'Choose your plan', svcSub:'Final prices, no surprises — 50% deposit, 50% on delivery. Click a plan and it fills the form directly.',
  pfrom:'Starting from', cur:'DA',
